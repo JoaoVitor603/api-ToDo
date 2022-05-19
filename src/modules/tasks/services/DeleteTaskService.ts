@@ -1,0 +1,21 @@
+import AppError from '@shared/errors/AppError';
+import { getCustomRepository } from 'typeorm';
+import TaskRepository from '../typeorm/repositories/TaskRepository';
+
+interface IRequest {
+    id: string;
+}
+
+class DeleteTaskService {
+    public async execute({ id }: IRequest): Promise<void> {
+        const taskRepository = getCustomRepository(TaskRepository);
+
+        const Tasks = await taskRepository.findOne(id);
+
+        if (!Tasks) {
+            throw new AppError('TASK not found');
+        }
+        await taskRepository.remove(Tasks);
+    }
+}
+export default DeleteTaskService;
